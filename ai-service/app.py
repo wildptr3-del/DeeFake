@@ -55,7 +55,7 @@ def health_check():
 
 
 # ─── File Upload ─────────────────────────────────────────
-UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "backend", "uploads")
+UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
 @app.route("/api/media/upload", methods=["POST"])

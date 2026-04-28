@@ -1,0 +1,51 @@
+services:
+  # 1. AI Service (Python / Flask)
+  - type: web
+    name: deefake-ai
+    env: docker
+    dockerContext: .
+    dockerfilePath: ai-service/Dockerfile
+    plan: starter # Recommended for PyTorch models (512MB might be tight)
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: FLASK_ENV
+        value: production
+
+  # 2. Backend Service (Node.js / Express)
+  - type: web
+    name: deefake-backend
+    env: node
+    plan: starter
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Set this in Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AI_SERVICE_URL
+        fromService:
+          name: deefake-ai
+          type: web
+          property: host
+
+  # 3. Frontend (React / Vite)
+  - type: web
+    name: deefake-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: deefake-backend
+          type: web
+          property: host
