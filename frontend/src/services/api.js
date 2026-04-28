@@ -1,14 +1,18 @@
 /**
  * Deefake - API Service
- * All requests go through Vite proxy (no CORS issues)
+ * Now using absolute URLs for production deployment
  */
+
+// 1. Get the base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 // ─── Upload media file ──────────────────────────────────
 export async function uploadMedia(file) {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await fetch('/api/media/upload', {
+  // Added API_BASE_URL prefix
+  const res = await fetch(`${API_BASE_URL}/api/media/upload`, {
     method: 'POST',
     body: formData,
   });
@@ -26,7 +30,7 @@ export async function analyzeMedia(file, fileId) {
   formData.append('file', file);
   if (fileId) formData.append('file_id', fileId);
 
-  const res = await fetch('/api/ai/analyze', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/analyze`, {
     method: 'POST',
     body: formData,
   });
@@ -37,7 +41,7 @@ export async function analyzeMedia(file, fileId) {
 
 // ─── Similarity check ───────────────────────────────────
 export async function checkSimilarity(fileIdA, fileIdB) {
-  const res = await fetch('/api/ai/similarity', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/similarity`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ file_id_a: fileIdA, file_id_b: fileIdB || 'reference' }),
@@ -49,7 +53,7 @@ export async function checkSimilarity(fileIdA, fileIdB) {
 
 // ─── Spread tracking ────────────────────────────────────
 export async function trackSpread(fileId) {
-  const res = await fetch('/api/ai/spread', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/spread`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ file_id: fileId }),
@@ -65,7 +69,7 @@ export async function webDetect(file, fileId) {
   formData.append('file', file);
   if (fileId) formData.append('file_id', fileId);
 
-  const res = await fetch('/api/ai/web-detect', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/web-detect`, {
     method: 'POST',
     body: formData,
   });
@@ -80,7 +84,7 @@ export async function videoAnalyze(file, fileId) {
   formData.append('file', file);
   if (fileId) formData.append('file_id', fileId);
 
-  const res = await fetch('/api/ai/video-analyze', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/video-analyze`, {
     method: 'POST',
     body: formData,
   });
@@ -91,20 +95,21 @@ export async function videoAnalyze(file, fileId) {
 
 // ─── Propagation Graph ──────────────────────────────────
 export async function getPropagationGraph(fileId) {
-  const res = await fetch(`/api/ai/propagation-graph/${fileId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/ai/propagation-graph/${fileId}`, {
     method: 'GET',
   });
 
   if (!res.ok) throw new Error('Propagation graph failed');
   return res.json();
 }
+
 // ─── Local Deepfake Detection ──────────────────────────
 export async function detectDeepfake(file, fileId) {
   const formData = new FormData();
   formData.append('file', file);
   if (fileId) formData.append('file_id', fileId);
 
-  const res = await fetch('/api/detect', {
+  const res = await fetch(`${API_BASE_URL}/api/detect`, {
     method: 'POST',
     body: formData,
   });
@@ -119,20 +124,20 @@ export async function embedWatermark(file, text) {
   formData.append('file', file);
   if (text) formData.append('text', text);
 
-  const res = await fetch('/api/ai/watermark/embed', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/watermark/embed`, {
     method: 'POST',
     body: formData,
   });
 
   if (!res.ok) throw new Error('Watermark embedding failed');
-  return res.blob(); // Returns the watermarked image blob
+  return res.blob();
 }
 
 export async function detectWatermark(file) {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await fetch('/api/ai/watermark/detect', {
+  const res = await fetch(`${API_BASE_URL}/api/ai/watermark/detect`, {
     method: 'POST',
     body: formData,
   });
