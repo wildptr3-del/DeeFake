@@ -28,13 +28,13 @@ const PORT = process.env.PORT || 5000;
 // ─── Middleware ───────────────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'https://deefake-frontend.onrender.com',
   credentials: true
 }));
 app.use(morgan('dev'));
 
 // AI Service Proxy (Python port 8000) - MUST be before body-parsers
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'https://deefake-49zo.onrender.com';
 const proxyOptions = {
   proxyReqPathResolver: (req) => `${req.baseUrl}${req.url === '/' ? '' : req.url}`,
   timeout: 120000,
@@ -104,7 +104,7 @@ app.use((err, req, res, next) => {
 // ─── Start Server ────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n🛡️  Deefake Backend running on http://localhost:${PORT}`);
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  console.log(`   Environment: ${process.env.NODE_ENV || 'Production'}\n`);
 });
 
 module.exports = app;
