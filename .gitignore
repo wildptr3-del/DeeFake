@@ -6,15 +6,36 @@ __pycache__/
 venv/
 env/
 
-# Environment files (MUST be ignored for security)
+# Environment & Secrets (CRITICAL: Do not push these)
 .env
 .env.*
 !.env.example
+*.json
+!package.json
+!composer.json
+!tsconfig.json
+!jsconfig.json
+!package-lock.json
+!manifest.json
+!browserslist
+!eslint.config.js
+!vite.config.js
+# Specific secret formats
+*_key.json
+*credentials*.json
+*service-account*.json
+.secret*
+*.pem
+*.key
+*.pfx
+*.cert
 
 # Build output
 dist/
 build/
 out/
+.next/
+.cache/
 
 # IDE & OS
 .vscode/
@@ -22,6 +43,8 @@ out/
 .DS_Store
 Thumbs.db
 *.swp
+*.bak
+*.tmp
 
 # Logs
 *.log
@@ -32,18 +55,25 @@ yarn-error.log*
 # Database & Storage
 *.db
 *.sqlite
+*.sqlite3
+*.mdb
+*.sql
+*.dump
 backend/uploads/
 ai-service/uploads/
 frontend/public/uploads/
 
-# AI Data & Models (DO NOT PUSH LARGE DATASETS OR WEIGHTS)
+# AI Data & Models (Large files)
 ai-service/dataset/
 ai-service/models/*.pth
 ai-service/models/*.pt
 ai-service/models/*.h5
+ai-service/models/*.onnx
+ai-service/models/*.pb
 
 # Testing & Diagnostics
 ai-service/test_batch.py
 ai-service/diagnose_model.py
 scratch/
 artifacts/
+temp/
