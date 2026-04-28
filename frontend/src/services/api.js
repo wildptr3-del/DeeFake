@@ -1,17 +1,16 @@
 /**
  * Deefake - API Service
- * Now using absolute URLs for production deployment
+ * EMERGENCY HARDCODE: Manually pointing to the Render backend.
  */
 
-// 1. Get the base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+// We are hardcoding this so the browser is forced to talk to the backend.
+const API_BASE_URL = 'https://deefake-backend.onrender.com';
 
 // ─── Upload media file ──────────────────────────────────
 export async function uploadMedia(file) {
   const formData = new FormData();
   formData.append('file', file);
 
-  // Added API_BASE_URL prefix
   const res = await fetch(`${API_BASE_URL}/api/media/upload`, {
     method: 'POST',
     body: formData,
