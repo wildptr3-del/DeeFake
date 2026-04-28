@@ -1,0 +1,49 @@
+# Dependency directories
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Environment files (MUST be ignored for security)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+out/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database & Storage
+*.db
+*.sqlite
+backend/uploads/
+ai-service/uploads/
+frontend/public/uploads/
+
+# AI Data & Models (DO NOT PUSH LARGE DATASETS OR WEIGHTS)
+ai-service/dataset/
+ai-service/models/*.pth
+ai-service/models/*.pt
+ai-service/models/*.h5
+
+# Testing & Diagnostics
+ai-service/test_batch.py
+ai-service/diagnose_model.py
+scratch/
+artifacts/
