@@ -36,9 +36,8 @@ services:
           property: host
 
   # 3. Frontend (React / Vite)
-  - type: web
+  - type: static  # <--- Change this from 'web' to 'static'
     name: deefake-frontend
-    env: static
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
@@ -49,3 +48,4 @@ services:
           name: deefake-backend
           type: web
           property: host
+
