@@ -1,5 +1,5 @@
 """
-SportShield AI - Vision Web Detection Service
+# Deefake - Google Cloud Vision Service
 
 Uses Google Cloud Vision API (WEB_DETECTION) to find where media has been shared online.
 Requires GOOGLE_APPLICATION_CREDENTIALS in .env or system environment.

@@ -1,5 +1,5 @@
 """
-SportShield AI - Video Frame Processor
+Deefake - Video Frame Processor
 
 Uses ffmpeg to extract frames from video files at 1 FPS,
 then batch-processes sampled frames through Google Cloud

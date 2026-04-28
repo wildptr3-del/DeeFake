@@ -1,5 +1,5 @@
 """
-SportShield AI - Digital Watermarking Module
+Deefake - Digital Watermarking Module
 Implements invisible LSB (Least Significant Bit) watermarking for media integrity.
 """
 

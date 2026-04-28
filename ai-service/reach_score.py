@@ -1,5 +1,5 @@
 """
-SportShield AI - Reach Score Calculator
+Deefake - Reach Score Calculator
 
 Implements the Spreadness Score formula:
 

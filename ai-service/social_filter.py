@@ -1,5 +1,5 @@
 """
-SportShield AI - Social Media URL Filter
+Deefake - Social Media URL Filter
 
 Parses a list of URLs from Vision API results and identifies
 which ones belong to monitored social media platforms:

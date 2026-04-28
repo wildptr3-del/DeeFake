@@ -1,5 +1,5 @@
 /**
- * SportShield AI - API Service
+ * Deefake - API Service
  * All requests go through Vite proxy (no CORS issues)
  */
 

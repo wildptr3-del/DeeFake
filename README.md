@@ -1,4 +1,4 @@
-# 🛡️ SportShield AI – Synthetic Media Detection & Propagation Analytics
+# 🛡️ Deefake – Synthetic Media Detection & Propagation Analytics
 
 A production-grade AI platform for detecting deepfakes, synthetic media, and tracking their propagation across the web. The system combines a deep learning backbone (**EfficientNet-B0**) with a **7-signal forensic analysis pipeline** to provide high-accuracy detection even for images without a trained neural network.
 

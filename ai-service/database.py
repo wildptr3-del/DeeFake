@@ -1,5 +1,5 @@
 """
-SportShield AI - MongoDB Atlas Database
+Deefake - MongoDB Atlas Database
 Replaces SQLite for production-ready cloud deployment.
 """
 

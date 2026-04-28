@@ -1,5 +1,5 @@
 """
-SportShield AI - AI Microservice
+Deefake - AI Microservice
 Flask-based AI service for media protection analysis.
 Uses Gemini API with Google Search grounding for web detection,
 ffmpeg for video processing, and NetworkX for propagation graph generation.
@@ -49,7 +49,7 @@ detector = DeepfakeInference(model_path=MODEL_PATH)
 def health_check():
     return jsonify({
         "status": "ok",
-        "service": "SportShield AI - AI Service",
+        "service": "Deefake - AI Service",
         "version": "4.0.0"
     })
 
@@ -609,7 +609,7 @@ def embed_watermark():
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded."}), 400
         
-    secret_text = request.form.get("text", "SportShield-Protected")
+    secret_text = request.form.get("text", "Deefake-Protected")
     
     try:
         img_bytes = request.files["file"].read()
@@ -653,7 +653,7 @@ if __name__ == "__main__":
     port = int(os.getenv("AI_PORT", 8000))
     debug = os.getenv("FLASK_ENV", "development") == "development"
 
-    print(f"\n[AI] SportShield AI Service running on http://localhost:{port}")
+    print(f"\n[AI] Deefake AI Service running on http://localhost:{port}")
     print(f"    Environment: {os.getenv('FLASK_ENV', 'development')}")
     print(f"    Vision API:  {'configured' if GOOGLE_APPLICATION_CREDENTIALS else 'NOT SET (fallback mode)'}")
     print(f"    Database:    MongoDB Atlas (Cloud)\n")

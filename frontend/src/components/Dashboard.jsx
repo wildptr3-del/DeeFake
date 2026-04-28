@@ -285,8 +285,8 @@ const NetworkGraph = ({ data, reachScore }) => {
 
 const Logo = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', marginBottom: '3.5rem' }}>
-    <img src="/logo.PNG" alt="DFake Logo" style={{ height: '105px', width: 'auto' }} />
-    <img src="/text logo.PNG" alt="DFake Text Logo" style={{ height: '80px', width: 'auto', marginTop: '15px' }} />
+    <img src="/logo.PNG" alt="Deefake Logo" style={{ height: '105px', width: 'auto' }} />
+    <img src="/text logo.PNG" alt="Deefake Text Logo" style={{ height: '80px', width: 'auto', marginTop: '15px' }} />
   </div>
 );
 

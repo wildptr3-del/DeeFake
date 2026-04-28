@@ -1,7 +1,7 @@
 {
-  "name": "sportshield-ai-backend",
+  "name": "deefake-backend",
   "version": "1.0.0",
-  "description": "SportShield AI - Backend REST API",
+  "description": "Deefake - Backend REST API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

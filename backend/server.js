@@ -1,5 +1,5 @@
 /**
- * SportShield AI - Backend Server
+ * Deefake - Backend Server
  * Express REST API entry point
  */
 
@@ -68,7 +68,7 @@ app.use('/api/protection', protectionRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'SportShield AI Backend',
+    service: 'Deefake Backend',
     timestamp: new Date().toISOString()
   });
 });
@@ -103,7 +103,7 @@ app.use((err, req, res, next) => {
 
 // ─── Start Server ────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🛡️  SportShield AI Backend running on http://localhost:${PORT}`);
+  console.log(`\n🛡️  Deefake Backend running on http://localhost:${PORT}`);
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });
 
