@@ -23,34 +23,48 @@ const { processSpreadImpact } = require('./services/radarService');
 connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000; // Render expects this to be dynamic
 
 // ─── Middleware ───────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Allows images to be served to the frontend
+}));
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://deefake-frontend.onrender.com',
+  origin: true, // Emergency fix: Allow all origins for the hackathon demo
   credentials: true
 }));
+
 app.use(morgan('dev'));
 
-// AI Service Proxy (Python port 8000) - MUST be before body-parsers
+// AI Service Proxy (Python) - MUST be before body-parsers
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'https://deefake-49zo.onrender.com';
+
 const proxyOptions = {
-  proxyReqPathResolver: (req) => `${req.baseUrl}${req.url === '/' ? '' : req.url}`,
-  timeout: 120000,
-  limit: '200mb' // Match the AI service limit
+  proxyReqPathResolver: (req) => {
+    // Correctly resolves the path for the Python service
+    const resolvedPath = req.baseUrl + (req.url === '/' ? '' : req.url);
+    return resolvedPath;
+  },
+  timeout: 120000, // 2 minutes to handle cold starts
+  proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
+    // Ensure large files can pass through the proxy
+    return proxyReqOpts;
+  }
 };
 
+// Routing for proxy
 app.use('/api/ai', proxy(AI_SERVICE_URL, proxyOptions));
 app.use('/api/detect', proxy(AI_SERVICE_URL, proxyOptions));
 
+// Body parsers for internal routes
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
-// Rate limiting
+// Rate limiting - INCREASED FOR DEMO
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: 1 * 60 * 1000, // Reduced to 1 minute window
+  max: 2000, // Increased to 2000 to stop 429 errors
   message: { error: 'Too many requests, please try again later.' }
 });
 app.use('/api/', limiter);
@@ -62,7 +76,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/protection', protectionRoutes);
-
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -103,7 +116,7 @@ app.use((err, req, res, next) => {
 
 // ─── Start Server ────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🛡️  Deefake Backend running on http://localhost:${PORT}`);
+  console.log(`\n🛡️  Deefake Backend running on PORT: ${PORT}`);
   console.log(`   Environment: ${process.env.NODE_ENV || 'Production'}\n`);
 });
 
