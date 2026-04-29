@@ -23,7 +23,7 @@ from watermark import embed_lsb_watermark, extract_lsb_watermark
 load_dotenv()
 
 app = Flask(__name__)
-# Render Free Tier has limited RAM, so we keep the limit reasonable
+# Keep limits tight for Render Free Tier RAM
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  
 CORS(app)
 
@@ -32,28 +32,38 @@ init_db()
 UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-# ─── GLOBAL DETECTOR (Loaded once at startup) ───────────
+# ─── GLOBAL DETECTOR (Deferred Loading) ─────────────────
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "models", "deepfake_efficientnet.pth")
 detector = None
 
 def get_detector():
-    """Lazy-load the detector to ensure it doesn't crash the start-up phase."""
+    """
+    Lazy-load the detector. 
+    This prevents the 'Port scan timeout' on Render.
+    """
     global detector
     if detector is None:
-        print("[AI] Loading EfficientNet model into memory...")
+        print("[AI] First request received. Loading EfficientNet model into memory...")
         detector = DeepfakeInference(model_path=MODEL_PATH)
+        print("[AI] Model loaded successfully.")
     return detector
 
-# ─── Health Check (Wakes up the model) ────────────────────
+# ─── Health Check (The "Heater") ──────────────────────────
 @app.route("/api/health", methods=["GET"])
 def health_check():
-    # Calling get_detector here ensures the model is "Hot" when the judge visits the site
-    get_detector() 
-    return jsonify({
-        "status": "ok",
-        "model_loaded": detector is not None,
-        "service": "Deefake - AI Service"
-    })
+    # Calling this starts the model loading process without blocking the port bind
+    try:
+        status = "warming_up"
+        if detector:
+            status = "ready"
+        
+        return jsonify({
+            "status": "ok",
+            "model_status": status,
+            "service": "Deefake - AI Service"
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # ─── Optimized Deepfake Detection ──────────────────────────
 @app.route("/api/detect", methods=["POST"], strict_slashes=False)
@@ -64,23 +74,18 @@ def detect_deepfake():
     uploaded = request.files["file"]
     file_id = request.form.get("file_id", str(uuid.uuid4()))
     
-    # Save extension
     ext = os.path.splitext(uploaded.filename)[1].lower()
     temp_path = os.path.join(UPLOADS_DIR, f"temp_{file_id}{ext}")
     
     try:
-        # 1. Save file once
         uploaded.save(temp_path)
         
-        # 2. Get the pre-loaded detector
+        # This will trigger the load if it's the first time
         ai_detector = get_detector()
         
-        # 3. Choose analysis path
         if ext in [".mp4", ".avi", ".mov", ".mkv"]:
-            # For videos, we only analyze a few frames to stay under 30s
             result = ai_detector.analyze_video(temp_path)
         else:
-            # For images, analyze directly
             result = ai_detector.analyze_image(temp_path)
             
         return jsonify({
@@ -93,18 +98,18 @@ def detect_deepfake():
         })
 
     except Exception as e:
-        print(f"[AI] ERROR: {str(e)}")
-        return jsonify({"success": False, "error": "Inference Timeout or Memory Limit"}), 500
+        print(f"[AI] ERROR during detection: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        # Cleanup immediately to save Render disk space
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-# (Keep the rest of your routes: web-detect, watermark, etc. as they were)
-# Note: Ensure you import numpy as np at the top for the watermark route.
-
+# ─── STARTUP CONFIGURATION ────────────────────────────────
+# DO NOT load the detector here. Let the app bind the port first.
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000)) 
-    # Important: In production, pre-load the detector once
-    get_detector()
-    app.run(host="0.0.0.0", port=port)
+    # Render sets the PORT environment variable. We MUST use it.
+    render_port = int(os.environ.get("PORT", 8000))
+    print(f"[AI] Binding to port {render_port}...")
+    
+    # Setting debug to False for production speed
+    app.run(host="0.0.0.0", port=render_port, debug=False)
